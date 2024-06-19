@@ -1,6 +1,7 @@
 import Text.Printf (printf)
 import System.IO (hFlush, stdout)
 import Control.Concurrent (threadDelay)
+import System.Process (callCommand)
 
 printTime :: Int -> IO ()
 printTime totalSeconds = do
@@ -10,7 +11,9 @@ printTime totalSeconds = do
     hFlush stdout
 
 countDown :: Int -> IO ()
-countDown 0 = putStrLn "\nTime's up!"
+countDown 0 = do
+    putStrLn "\nTime's up!"
+    playSound
 countDown time = do
     printTime time
     threadDelay 1000000
@@ -23,6 +26,11 @@ pomodoro workMinutes breakMinutes = do
     putStrLn "Take a break!"
     countDown (breakMinutes * 60)
     pomodoro workMinutes breakMinutes
+
+playSound :: IO ()
+playSound = do
+    let soundFile = "audio/timer-sound.wav"
+    callCommand ("paplay " ++ soundFile)
 
 main :: IO ()
 main = do
